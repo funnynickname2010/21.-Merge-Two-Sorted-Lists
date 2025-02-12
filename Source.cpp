@@ -1,4 +1,4 @@
-
+#include <iostream>
 //Definition for singly-linked list.
 struct ListNode {
     int val;
@@ -14,9 +14,8 @@ ListNode& NextNode(const ListNode current_node) {
 }
 
 //Changes the next of the first operand to the address of the second one
-ListNode& ChangeNode(ListNode operand_node, ListNode next_node) {
+void ChangeNode(ListNode operand_node, ListNode next_node) {
     operand_node.next = &next_node;
-    return next_node;
 }
 
 class Solution {
@@ -27,21 +26,45 @@ public:
         ListNode list_buffer(0, nullptr);
         ListNode list_buffer2(0, nullptr);
 
-        while (list1_node.next != nullptr && list2_node.next != nullptr) {
-            if (list1_node.val < list2_node.val) {
+        while (true) {
+            if (list1_node.val < list2_node.val && list2_node.next != nullptr) {
                 list_buffer = NextNode(list1_node);
                 ChangeNode(list1_node, list2_node);
                 list1_node = list_buffer;
             }
-            else if (list1_node.val >= list2_node.val) {
+            else if (list1_node.val >= list2_node.val && list1_node.next != nullptr) {
                 list_buffer = NextNode(list2_node);
                 ChangeNode(list2_node, list1_node);
                 list_buffer2 = NextNode(list1_node);
                 ChangeNode(list1_node, list_buffer);
-                list1_node = list_buffer2;
+                list2_node = list_buffer;
+            }
+            else {
+                break;
             }
         }
 
         return &list2_node;
     }
 };
+
+int main() {
+    Solution sol;
+    ListNode one_third(4, nullptr);
+    ListNode one_second(2, &one_third);
+    ListNode one_first(1, &one_second);
+
+    ListNode two_third(4, nullptr);
+    ListNode two_second(3, &two_third);
+    ListNode two_first(1, &two_second);
+
+    ListNode* buffer = sol.mergeTwoLists(&one_first, &two_first);
+    std::cout << "TESTING: ";
+    std::cout << buffer->val << " ";
+    std::cout << buffer->next->val << " ";
+    std::cout << buffer->next->next->val << " ";
+    std::cout << buffer->next->next->next->val << " ";
+    std::cout << buffer->next->next->next->next->val << " ";
+    std::cout << buffer->next->next->next->next->next->val << " ";
+
+}
